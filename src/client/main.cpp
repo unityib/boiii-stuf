@@ -336,7 +336,7 @@ int main()
 				throw std::runtime_error("Bad binary loaded into memory");
 			}
 
-			patch_imports();
+			// patch_imports();
 
 			if (!component_loader::post_load())
 			{
