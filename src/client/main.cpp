@@ -42,52 +42,52 @@ namespace
 		return {game_entry, original_import};
 	}
 
-	bool restart_app_if_necessary_stub()
-	{
-		const std::string steam_path = steam::SteamAPI_GetSteamInstallPath();
-		if (steam_path.empty() || !::utils::io::file_exists(steam_path + "/steam.exe"))
-		{
-			game::show_error("Steam must be installed for the game to run. Your test has failed.");
-			ShellExecuteA(nullptr, "open", "https://store.steampowered.com/about/", nullptr, nullptr, SW_SHOWNORMAL);
+	// bool restart_app_if_necessary_stub()
+	// {
+	// 	const std::string steam_path = steam::SteamAPI_GetSteamInstallPath();
+	// 	if (steam_path.empty() || !::utils::io::file_exists(steam_path + "/steam.exe"))
+	// 	{
+	// 		game::show_error("Steam must be installed for the game to run. Your test has failed.");
+	// 		ShellExecuteA(nullptr, "open", "https://store.steampowered.com/about/", nullptr, nullptr, SW_SHOWNORMAL);
 			
-		}
+	// 	}
 
-		utils::hook::set(g_original_import.first, g_original_import.second);
-		patch_steam_import("SteamAPI_Shutdown", steam::SteamAPI_Shutdown);
+	// 	utils::hook::set(g_original_import.first, g_original_import.second);
+	// 	patch_steam_import("SteamAPI_Shutdown", steam::SteamAPI_Shutdown);
 
-		component_loader::post_unpack();
-		return steam::SteamAPI_RestartAppIfNecessary();
-	}
+	// 	component_loader::post_unpack();
+	// 	return steam::SteamAPI_RestartAppIfNecessary();
+	// }
 
-	BOOL set_process_dpi_aware_stub()
-	{
-		component_loader::post_unpack();
-		return SetProcessDPIAware();
-	}
+	// BOOL set_process_dpi_aware_stub()
+	// {
+	// 	component_loader::post_unpack();
+	// 	return SetProcessDPIAware();
+	// }
 
-	void patch_imports()
-	{
-		patch_steam_import("SteamAPI_RegisterCallback", steam::SteamAPI_RegisterCallback);
-		patch_steam_import("SteamAPI_RegisterCallResult", steam::SteamAPI_RegisterCallResult);
-		patch_steam_import("SteamGameServer_Shutdown", steam::SteamGameServer_Shutdown);
-		patch_steam_import("SteamGameServer_RunCallbacks", steam::SteamGameServer_RunCallbacks);
-		patch_steam_import("SteamGameServer_GetHSteamPipe", steam::SteamGameServer_GetHSteamPipe);
-		patch_steam_import("SteamGameServer_GetHSteamUser", steam::SteamGameServer_GetHSteamUser);
-		patch_steam_import("SteamInternal_GameServer_Init", steam::SteamInternal_GameServer_Init);
-		patch_steam_import("SteamAPI_UnregisterCallResult", steam::SteamAPI_UnregisterCallResult);
-		patch_steam_import("SteamAPI_UnregisterCallback", steam::SteamAPI_UnregisterCallback);
-		patch_steam_import("SteamAPI_RunCallbacks", steam::SteamAPI_RunCallbacks);
-		patch_steam_import("SteamInternal_CreateInterface", steam::SteamInternal_CreateInterface);
-		patch_steam_import("SteamAPI_GetHSteamUser", steam::SteamAPI_GetHSteamUser);
-		patch_steam_import("SteamAPI_GetHSteamPipe", steam::SteamAPI_GetHSteamPipe);
-		patch_steam_import("SteamAPI_Init", steam::SteamAPI_Init);
-		//patch_steam_import("SteamAPI_Shutdown", steam::SteamAPI_Shutdown);
-		g_original_import = patch_steam_import("SteamAPI_RestartAppIfNecessary", restart_app_if_necessary_stub);
+	// void patch_imports()
+	// {
+	// 	patch_steam_import("SteamAPI_RegisterCallback", steam::SteamAPI_RegisterCallback);
+	// 	patch_steam_import("SteamAPI_RegisterCallResult", steam::SteamAPI_RegisterCallResult);
+	// 	patch_steam_import("SteamGameServer_Shutdown", steam::SteamGameServer_Shutdown);
+	// 	patch_steam_import("SteamGameServer_RunCallbacks", steam::SteamGameServer_RunCallbacks);
+	// 	patch_steam_import("SteamGameServer_GetHSteamPipe", steam::SteamGameServer_GetHSteamPipe);
+	// 	patch_steam_import("SteamGameServer_GetHSteamUser", steam::SteamGameServer_GetHSteamUser);
+	// 	patch_steam_import("SteamInternal_GameServer_Init", steam::SteamInternal_GameServer_Init);
+	// 	patch_steam_import("SteamAPI_UnregisterCallResult", steam::SteamAPI_UnregisterCallResult);
+	// 	patch_steam_import("SteamAPI_UnregisterCallback", steam::SteamAPI_UnregisterCallback);
+	// 	patch_steam_import("SteamAPI_RunCallbacks", steam::SteamAPI_RunCallbacks);
+	// 	patch_steam_import("SteamInternal_CreateInterface", steam::SteamInternal_CreateInterface);
+	// 	patch_steam_import("SteamAPI_GetHSteamUser", steam::SteamAPI_GetHSteamUser);
+	// 	patch_steam_import("SteamAPI_GetHSteamPipe", steam::SteamAPI_GetHSteamPipe);
+	// 	patch_steam_import("SteamAPI_Init", steam::SteamAPI_Init);
+	// 	//patch_steam_import("SteamAPI_Shutdown", steam::SteamAPI_Shutdown);
+	// 	g_original_import = patch_steam_import("SteamAPI_RestartAppIfNecessary", restart_app_if_necessary_stub);
 
-		const utils::nt::library game{};
-		utils::hook::set(game.get_iat_entry("kernel32.dll", "ExitProcess"), exit_hook);
-		utils::hook::set(game.get_iat_entry("user32.dll", "SetProcessDPIAware"), set_process_dpi_aware_stub);
-	}
+	// 	const utils::nt::library game{};
+	// 	utils::hook::set(game.get_iat_entry("kernel32.dll", "ExitProcess"), exit_hook);
+	// 	utils::hook::set(game.get_iat_entry("user32.dll", "SetProcessDPIAware"), set_process_dpi_aware_stub);
+	// }
 
 	void remove_crash_file()
 	{
